@@ -26,7 +26,21 @@ class Generate():
 	def create_view(self):
 		groups = self.groups
 		print('Need to create '+str(groups)+' groups.')
-        json1 = {"type": "Viewed", "data":{"viewID": str(uuid.uuid1()), "eventDateTime": str(datetime.now())}}
+		i = 0
+		while i<groups:
+            json1 = {"type": "Viewed", "data":{"viewID": str(uuid.uuid1()), "eventDateTime": str(datetime.now())}}
+            self.data = self.data+json1+'\n'
+            if i % 20 == 0:
+                json2 = {"type": "Interacted", "data":{"viewID": json1['data']['viewID'], "eventDateTime": str(datetime.now())}}
+                self.data = self.data+json2+'\n'
+            if i % 20 == 1: 
+                json3 = {"type": "Click Through", "data":{"viewID": json1['data']['viewID'], "eventDateTime": str(datetime.now())}}
+                self.data = self.data+json3+'\n'
+            if i % 20 == 2:
+
+            i += 1
+
+    def create_interaction(self):
 
 
 
