@@ -1,8 +1,4 @@
-import sys
-import uuid
-from datetime import datetime
-import json
-import time
+import threading
 
 
 class Generate():
@@ -64,7 +60,13 @@ class Generate():
         out.close()
             
 
+    def run(self):
+    	t1 = threading.Thread(target=self.create_data)
+    	t2 = threading.Thread(target=self.checknsave)
+    	t1.start()
+    	t2.start()
 
-if __name__ == "__main__":
-	gen_data = Generate()
-	gen_data.create_data()
+
+if __name__ == '__main__':
+	g = Generate()
+	g.run()
