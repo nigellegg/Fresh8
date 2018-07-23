@@ -1,9 +1,10 @@
+import threading
 import sys
-import uuid
-from datetime import datetime
 import json
 import time
-import time
+from datetime import datetime
+import uuid
+
 
 class Generate():
 
@@ -14,14 +15,18 @@ class Generate():
         interval = int(sys.argv[3])
         self.output = sys.argv[4]
         starttime=time.time()
-        while True:
-            self.checknsave()
-            time.sleep(interval - ((time.time() - starttime) % interval))
-
+        
 
     def create_data(self):
+    	'''
+    	Generates the JSON data. 
+    	Data is written to the class variable, self.data.  
+    	Volume of data created is taken from the class variable, self.groups
+    	'''
+
         groups = self.groups
         print('Need to create '+str(groups)+' groups.')
+        
         i = 0
         while i<groups:
             json1 = {"type": "Viewed", "data":{"viewID": str(uuid.uuid1()), "eventDateTime": str(datetime.now())}}
@@ -38,21 +43,24 @@ class Generate():
                 self.data.append(json4)
                 self.data.append(json5)
             i += 1
-        print(self.data)
-        out = open(self.output+'data.txt', 'w')
-        out.write(self.data)
-
+        
         
     def checknsave(self):
+        '''
+        Run on a timer.  
+        Takes the class variable, self.data, and writes out the correct number of groups
+        to the output file. 
+        '''
+
         print("Check size of data and save... ")
         jdata = self.data
-        print(jdata)
         views = []
         interact = []
         click = []
         out = open('events'+str(datetime.now())+'.json', 'w')
         while len(views) < self.batch:
             for x in jdata:
+                x = json.dumps(x)
                 if x['type'] == 'Viewed':
                     views.append(x['data']['viewID'])
                 if x['type'] == 'Interacted':
@@ -61,11 +69,19 @@ class Generate():
                     click.append(x['data']['viewID'])
         for y in jdata:
             if y['data']['viewID'] in views:
-                out.write(str(y))
+                json.dump(y)
         out.close()
             
 
+    def run(self):
+    	t1 = threading.Thread(target=self.create_data)
+    	t2 = threading.Thread(target=self.checknsave)
+        t1.start()
+    	while True:
+    	    t2.start()
+            time.sleep(interval - ((time.time() - starttime) % interval))
 
-if __name__ == "__main__":
-	gen_data = Generate()
-	gen_data.create_data()
+
+if __name__ == '__main__':
+	g = Generate()
+	g.run()
