@@ -1,4 +1,4 @@
-import threading
+import threading    
 import sys
 import json
 import time
@@ -12,17 +12,17 @@ class Generate():
         self.data = []
         self.groups = int(sys.argv[1])
         self.batch = int(sys.argv[2])
-        interval = int(sys.argv[3])
+        self.interval = int(sys.argv[3])
         self.output = sys.argv[4]
         starttime=time.time()
         
 
     def create_data(self):
-    	'''
-    	Generates the JSON data. 
-    	Data is written to the class variable, self.data.  
-    	Volume of data created is taken from the class variable, self.groups
-    	'''
+        '''
+        Generates the JSON data. 
+        Data is written to the class variable, self.data.  
+        Volume of data created is taken from the class variable, self.groups
+        '''
 
         groups = self.groups
         print('Need to create '+str(groups)+' groups.')
@@ -74,11 +74,12 @@ class Generate():
             
 
     def run(self):
-    	t1 = threading.Thread(target=self.create_data)
-    	t2 = threading.Thread(target=self.checknsave)
+        t1 = threading.Thread(target=self.create_data)
+        t2 = threading.Thread(target=self.checknsave)
         t1.start()
-    	while True:
-    	    t2.start()
+        interval = self.interval
+        while True:
+            t2.start()
             time.sleep(interval - ((time.time() - starttime) % interval))
 
 
