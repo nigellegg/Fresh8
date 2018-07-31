@@ -53,11 +53,12 @@ class Generate():
         '''
 
         print("Check size of data and save... ")
+        output = self.output
         jdata = self.data
         views = []
         interact = []
         click = []
-        out = open('events'+str(datetime.now())+'.json', 'w')
+        out = open(output+'/'+'events'+str(datetime.now())+'.json', 'w')
         while len(views) < self.batch:
             for x in jdata:
                 print(x)
