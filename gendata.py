@@ -60,7 +60,8 @@ class Generate():
         out = open('events'+str(datetime.now())+'.json', 'w')
         while len(views) < self.batch:
             for x in jdata:
-                x = json.dumps(x)
+                print(x)
+                #x = json.loads(x)
                 if x['type'] == 'Viewed':
                     views.append(x['data']['viewID'])
                 if x['type'] == 'Interacted':
@@ -69,7 +70,7 @@ class Generate():
                     click.append(x['data']['viewID'])
         for y in jdata:
             if y['data']['viewID'] in views:
-                json.dump(y)
+                json.dump(y, out)
         out.close()
             
 
@@ -80,9 +81,10 @@ class Generate():
         interval = self.interval
         while True:
             t2.start()
-            time.sleep(interval - ((time.time() - starttime) % interval))
+            time.sleep(interval - (int((datetime.now()-starttime).seconds) % interval))
 
 
 if __name__ == '__main__':
-	g = Generate()
-	g.run()
+    starttime = datetime.now()
+    g = Generate()
+    g.run()
